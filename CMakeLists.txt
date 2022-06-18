@@ -56,20 +56,39 @@ add_definitions(
         # "-fno-omit-frame-pointer"
 )
 
+set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third-party)
+
+set(WIREDTIGER_DIR ${THIRD_PARTY_DIR}/wiredtiger)
+
 set(INCLUDE
-        include
-        include/aio
-        include/pipe
-        include/types)
+        ${INCLUDE_DIR}
+        ${INCLUDE_DIR}/aio
+        ${INCLUDE_DIR}/db
+        ${INCLUDE_DIR}/db/wiredtiger
+        ${INCLUDE_DIR}/pipe
+        ${INCLUDE_DIR}/types
+        ${WIREDTIGER_DIR}/build/include
+        )
 
-file(GLOB SOURCE
-        include/*.h
-        include/aio/*.h
-        include/pipe/*.h
-        include/types/*.h
-        src/*.cpp
-        src/common/*.cpp
-        src/io/*.cpp)
+file(GLOB SOURCE_FILE
+        ${INCLUDE_DIR}/*.h
+        ${INCLUDE_DIR}/aio/*.h
+        ${INCLUDE_DIR}/pipe/*.h
+        ${INCLUDE_DIR}/types/*.h
+        ${SOURCE_DIR}/*.cpp
+        ${SOURCE_DIR}/aio/*.cpp
+        ${SOURCE_DIR}/db/*.cpp
+        ${SOURCE_DIR}/db/wiredtiger/*.cpp
+        ${SOURCE_DIR}/common/*.cpp
+        )
 
+set(EXT_LIBS
+    ${THIRD_PARTY}/wiredtiger/build/libwiredtiger.dylib
+)
+ 
 include_directories(${INCLUDE})
-add_library(ccl ${SOURCE})
+add_library(ccl ${SOURCE_FILE})
+
+target_link_libraries(${PROJECT_NAME} pthread)
