@@ -1,0 +1,6 @@
+.vscode
+.idea
+build
+*.out
+*.o
+.DS_Store
