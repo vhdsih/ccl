@@ -69,14 +69,11 @@ set(INCLUDE
         ${INCLUDE_DIR}/db/wiredtiger
         ${INCLUDE_DIR}/pipe
         ${INCLUDE_DIR}/types
+        ${INCLUDE_DIR}/utils
         ${WIREDTIGER_DIR}/build/include
         )
 
 file(GLOB SOURCE_FILE
-        ${INCLUDE_DIR}/*.h
-        ${INCLUDE_DIR}/aio/*.h
-        ${INCLUDE_DIR}/pipe/*.h
-        ${INCLUDE_DIR}/types/*.h
         ${SOURCE_DIR}/*.cpp
         ${SOURCE_DIR}/aio/*.cpp
         ${SOURCE_DIR}/db/*.cpp
@@ -88,7 +85,14 @@ set(EXT_LIBS
     ${THIRD_PARTY}/wiredtiger/build/libwiredtiger.dylib
 )
  
-include_directories(${INCLUDE})
-add_library(ccl ${SOURCE_FILE})
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+include_directories(${INCLUDE})
+add_library(${PROJECT_NAME} ${SOURCE_FILE})
 target_link_libraries(${PROJECT_NAME} pthread)
+
+
+# example
+SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin/examples)
+add_executable(run_lib ${INCLUDE} examples/run_lib.cpp)
+target_link_libraries(run_lib ${PROJECT_NAME})

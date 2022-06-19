@@ -40,7 +40,7 @@ public:
     std::vector<T> &data() { return data_; }
 
     /* Copy disabled */
-    buffer_t(buffer_t<T> &) = delete;
+    buffer_t(buffer_t<T> &)                     = delete;
     buffer_t<T> &operator=(const buffer_t<T> &) = delete;
 
 private:
@@ -54,16 +54,16 @@ private:
 };
 
 template <typename T>
-buffer_t<T>::buffer_t()
-    : limit_(LIMIT_MAX), released_(false), item_release_fn_(nullptr) {}
+buffer_t<T>::buffer_t() :
+    limit_(LIMIT_MAX), released_(false), item_release_fn_(nullptr) {}
 
 template <typename T>
-buffer_t<T>::buffer_t(size_t limit)
-    : limit_(limit), released_(false), item_release_fn_(nullptr) {}
+buffer_t<T>::buffer_t(size_t limit) :
+    limit_(limit), released_(false), item_release_fn_(nullptr) {}
 
 template <typename T>
-buffer_t<T>::buffer_t(size_t limit, std::function<void(T &)> fn)
-    : limit_(limit), released_(false), item_release_fn_(fn) {}
+buffer_t<T>::buffer_t(size_t limit, std::function<void(T &)> fn) :
+    limit_(limit), released_(false), item_release_fn_(fn) {}
 
 template <typename T>
 void buffer_t<T>::push(const T &item) {
@@ -112,6 +112,6 @@ buffer_t<T>::~buffer_t() {
     }
 }
 
-}  // namespace erspan
+} // namespace ccl
 
-#endif  // ERSPAN_AGENT_COMMON_BUFFER_H
+#endif // ERSPAN_AGENT_COMMON_BUFFER_H

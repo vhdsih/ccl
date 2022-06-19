@@ -1,6 +1,8 @@
-//
-// Created by vhdsih on 2022/4/29.
-//
+/*
+ * @Author: vhdsih
+ * @Date: 2022-06-18 22:41:35
+ */
+
 // <key, value> cache with timeout,
 // given a time interval, you can quickly delete elements
 // that have not been visited beyond that interval
@@ -18,8 +20,8 @@ namespace ccl {
 /* the item saved in the cache */
 template <typename Key, typename Value>
 struct cache_item_t {
-    cache_item_t(const Key &k, const Value &v)
-        : key(k), val(v), last_touch(time(nullptr)) {}
+    cache_item_t(const Key &k, const Value &v) :
+        key(k), val(v), last_touch(time(nullptr)) {}
     Key key;
     Value val;
     time_t last_touch;
@@ -38,8 +40,8 @@ public:
     /* default timeout is 5 min */
     cache_with_time_t() : timeout_(300) {}
 
-    cache_with_time_t(uint32_t timeout, val_release_fn fn = nullptr)
-        : timeout_(timeout), val_release_fn_(fn) {}
+    cache_with_time_t(uint32_t timeout, val_release_fn fn = nullptr) :
+        timeout_(timeout), val_release_fn_(fn) {}
 
     ~cache_with_time_t();
 
@@ -62,16 +64,16 @@ public:
     size_t size() const { return key2it_.size(); }
 
     /* copy disabled */
-    cache_with_time_t(cache_with_time_t &) = delete;
+    cache_with_time_t(cache_with_time_t &)                  = delete;
     cache_with_time_t &operator=(const cache_with_time_t &) = delete;
 
 private:
-    uint32_t timeout_;                          // second
-    val_release_fn val_release_fn_;             // release value
-    std::list<cache_item_t<Key, Value>> data_;  // <key, value> save in here
+    uint32_t timeout_;                         // second
+    val_release_fn val_release_fn_;            // release value
+    std::list<cache_item_t<Key, Value>> data_; // <key, value> save in here
     std::unordered_map<Key,
                        typename std::list<cache_item_t<Key, Value>>::iterator>
-        key2it_;  // key to iterator of data_
+        key2it_; // key to iterator of data_
 };
 
 template <typename Key, typename Value>
@@ -100,11 +102,10 @@ template <typename Key, typename Value>
 void cache_with_time_t<Key, Value>::set(const Key &key, const Value &val) {
     auto it = key2it_.find(key);
     if (it != key2it_.end()) {
-        auto item = *it->second;
+        auto item       = *it->second;
         item.last_touch = time(nullptr);
         if (item.val != val) {
-            if (val_release_fn_)
-                val_release_fn_(item.val);
+            if (val_release_fn_) val_release_fn_(item.val);
             item.val = val;
         }
         data_.erase(it->second);
@@ -160,6 +161,6 @@ void cache_with_time_t<Key, Value>::erase(const Key &key) {
     }
 }
 
-}  // namespace ccl
+} // namespace ccl
 
 #endif

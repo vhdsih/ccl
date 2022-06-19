@@ -4,3 +4,5 @@ build
 *.out
 *.o
 .DS_Store
+bin
+lib

@@ -1,7 +1,6 @@
 /*
- * @Author: zhangdongchang
+ * @Author: vhdsih
  * @Date: 2022-06-17 16:06:06
- * @LastEditTime: 2022-06-18 12:32:35
  */
 
 #ifndef CCL_AIO_FACTORY_H
@@ -13,26 +12,7 @@
 #include "aio_epoll.h"
 #include "aio_poll.h"
 #include "aio_select.h"
-
-namespace ccl {
-
-enum class aio_type_t : uint8_t {
-    poll,
-    epoll,
-    select,
-};
-} // namespace ccl
-
-namespace std {
-
-template <>
-struct hash<ccl::aio_type_t> {
-    size_t operator()(const ccl::aio_type_t type) const {
-        return static_cast<size_t>(type);
-    }
-};
-
-} // namespace std
+#include "aio_types.h"
 
 namespace ccl {
 
