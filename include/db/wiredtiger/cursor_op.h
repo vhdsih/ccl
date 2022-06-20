@@ -11,8 +11,8 @@
 // 用于wiredtiger游标的操作
 //
 
-#ifndef ERSPAN_ANGENT_DAO_CURSOR_OP_H
-#define ERSPAN_ANGENT_DAO_CURSOR_OP_H
+#ifndef CCL_WIREDTIGER_CURSOR_OP_H
+#define CCL_WIREDTIGER_CURSOR_OP_H
 
 #include <string>
 
@@ -25,32 +25,32 @@
 
 // 设置key，op为cursor_op的实例
 #define WT_OP_SET_KEY(op, ...) \
-    op->get_cursor()->set_key(op->get_cursor(), __VA_ARGS__)
+    op->get_cursor()->set_key(op->get_cursor(), __VA_ARGS__);
 
 // 获取key，op为cursor_op的实例
 #define WT_OP_SET_VALS(op, ...) \
-    op->get_cursor()->set_value(op->get_cursor(), __VA_ARGS__)
+    op->get_cursor()->set_value(op->get_cursor(), __VA_ARGS__);
 
 // 设置values，op为cursor_op的实例
 #define WT_OP_GET_KEY(op, ...) \
-    op->get_cursor()->get_key(op->get_cursor(), __VA_ARGS__)
+    op->get_cursor()->get_key(op->get_cursor(), __VA_ARGS__);
 
 // 获取values，op为cursor_op的实例
 #define WT_OP_GET_VALS(op, ...) \
-    op->get_cursor()->get_value(op->get_cursor(), __VA_ARGS__)
+    op->get_cursor()->get_value(op->get_cursor(), __VA_ARGS__);
 
-namespace db {
+namespace ccl {
 
-typedef WT_CURSOR wt_cursor;
+using wt_cursor = WT_CURSOR *;
 
 class cursor_op {
 public:
-    cursor_op(wt_cursor *cursor) : error_code_(0), cursor_(cursor) {}
-    cursor_op(const cursor_op &) = delete;
+    cursor_op(wt_cursor cursor) : error_code_(0), cursor_(cursor) {}
+    cursor_op(const cursor_op &)            = delete;
     cursor_op &operator=(const cursor_op &) = delete;
     ~cursor_op();
 
-    wt_cursor *get_cursor() { return cursor_; }
+    wt_cursor get_cursor() { return cursor_; }
 
     // 移动cursor指向下一条数据
     bool next();
@@ -90,9 +90,9 @@ public:
 
 private:
     bool error_code_;
-    wt_cursor *cursor_;
+    wt_cursor cursor_;
 };
 
-}  // namespace db
+} // namespace ccl
 
 #endif

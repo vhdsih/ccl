@@ -6,30 +6,29 @@
 #ifndef CCL_DB_DAO_H
 #define CCL_DB_DAO_H
 
+#include <functional>
 #include <string>
+#include <vector>
 
-#include "noncopyable.h"
+#include "../utils/noncopyable.h"
+#include "dao_item.h"
 
 namespace ccl {
 
+class db_t;
 class dao_t : public noncopyable {
 public:
-    dao_t(const std::string &obj_name, const std::string &obj_conf) :
-        obj_name_(obj_name), obj_conf_(obj_conf) {}
+    using cstr_t = const std::string &;
+    using fn1_t  = std::function<bool(void *, dao_item_t &)>;
+    using fn2_t  = std::function<bool(void *, dao_item_t &, dao_item_t &)>;
 
     virtual ~dao_t() = default;
 
-    virtual bool check()  = 0;
-    virtual bool create() = 0;
-    virtual bool remove() = 0;
+    virtual bool create(cstr_t &target, cstr_t &conf) = 0;
 
-    virtual bool erase()  = 0;
-    virtual bool insert() = 0;
-    virtual bool search() = 0;
+    virtual bool exec(cstr_t, dao_item_t &, fn1_t) = 0;
 
-private:
-    std::string obj_name_;
-    std::string obj_conf_;
+    virtual bool exec(cstr_t, dao_item_t &, dao_item_t &, fn2_t) = 0;
 };
 
 }; // namespace ccl

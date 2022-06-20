@@ -1,6 +1,8 @@
 #include "cursor_op.h"
 
-namespace db {
+#include "wiredtiger.h"
+
+namespace ccl {
 
 cursor_op::~cursor_op() {
     if (cursor_) {
@@ -42,4 +44,4 @@ const char *cursor_op::err_info(int code) const {
     return wiredtiger_strerror(code);
 }
 
-} // namespace db
+} // namespace ccl

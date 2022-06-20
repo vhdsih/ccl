@@ -2,46 +2,18 @@ cmake_minimum_required(VERSION 3.20)
 project(ccl)
 
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_BUILD_TYPE Release)
+# set(CMAKE_BUILD_TYPE Release)
 
-if(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-    message(FATAL_ERROR "Please into another dir to build!")
-endif()
+set(CMAKE_CXX_FLAGS_DEBUG "-O0")    # 调试包不优化
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG") # release 包优化
 
-if(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-    message(FATAL_ERROR "Please into another dir to build!")
-endif()
-
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    message(STATUS "build for release version")
-elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "build for debug version")
-else()
-    message(STATUS "build for unknown version")
-endif()
-
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    set(UNIX_OS true)
-    add_definitions("-O2 -g")
-    add_definitions("-Wno-invalid-source-encoding")
-elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
-    set(UNIX_OS true)
-    add_definitions("-flto")
-    add_definitions("-Os -g")
-    add_definitions("-Wno-invalid-source-encoding")
-    add_definitions("-fdata-sections -ffunction-sections")
-    add_definitions("-fno-rtti -fno-exceptions")
-    if(OPTMIZE_SIZE MATCHES "YES")
-        add_definitions("-fvisibility=hidden -fvisibility-inlines-hidden")
-    endif()
-else()
-    message(FATAL_ERROR "unknown CMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}")
-endif()
+message("-- Build type is " ${CMAKE_BUILD_TYPE})
 
 add_definitions(
         "-W"
         "-Wall"
         "-Werror"
+        "-Wextra"
         "-Wshadow"
         "-Wformat"
         "-Wpointer-arith"
@@ -88,6 +60,8 @@ set(EXT_LIBS
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 include_directories(${INCLUDE})
+link_directories(${WIREDTIGER_DIR}/build/)
+
 add_library(${PROJECT_NAME} ${SOURCE_FILE})
 target_link_libraries(${PROJECT_NAME} pthread)
 
@@ -95,4 +69,7 @@ target_link_libraries(${PROJECT_NAME} pthread)
 # example
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin/examples)
 add_executable(run_lib ${INCLUDE} examples/run_lib.cpp)
-target_link_libraries(run_lib ${PROJECT_NAME})
+target_link_libraries(run_lib ${PROJECT_NAME} wiredtiger)
+
+add_executable(db_wt ${INCLUDE} examples/db/wt.cpp)
+target_link_libraries(db_wt ${PROJECT_NAME} wiredtiger)

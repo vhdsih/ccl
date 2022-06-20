@@ -9,6 +9,8 @@
 namespace ccl {
 
 class dao_item_t {
+public:
+    dao_item_t()          = default;
     virtual ~dao_item_t() = default;
 };
 

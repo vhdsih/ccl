@@ -10,8 +10,8 @@
 
 #include <functional>
 
+#include "../utils/noncopyable.h"
 #include "aio_types.h"
-#include "noncopyable.h"
 
 namespace ccl {
 
