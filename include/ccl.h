@@ -20,11 +20,15 @@
 #include "db/wiredtiger/cursor_op.h"
 #include "db/wiredtiger/dao_wt.h"
 #include "db/wiredtiger/db_wt.h"
-#include "pipe/better_pipe.h"
+#include "pipe/fake_pipe.h"
+#include "pipe/inited_pipe.h"
+#include "pipe/inited_pipe2.h"
 #include "pipe/pipe.h"
+#include "pipe/pipe_helper.h"
 #include "types/buffer.h"
 #include "types/cache.h"
 #include "types/cache_with_time.h"
+#include "utils/log.h"
 #include "utils/noncopyable.h"
 
 namespace ccl {
