@@ -33,7 +33,6 @@
 
 namespace ccl {
 
-static const char *CCL_VERSION = "0.0.1";
 
 void hello();
 

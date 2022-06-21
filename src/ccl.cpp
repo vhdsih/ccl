@@ -11,6 +11,8 @@ namespace ccl {
 
 void hello() { std::cout << "Hello, ccl!" << std::endl; }
 
+static const char *CCL_VERSION = "0.0.1";
+
 const char *version() { return CCL_VERSION; }
 
 } // namespace ccl

@@ -56,7 +56,7 @@ file(GLOB SOURCE_FILE
 set(EXT_LIBS
     ${THIRD_PARTY}/wiredtiger/build/libwiredtiger.dylib
 )
- 
+
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 include_directories(${INCLUDE})

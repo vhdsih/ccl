@@ -10,24 +10,25 @@
 #include <cstdlib>
 #include <cstring>
 #include <functional>
+#include <memory>
 #include <vector>
+
+#include "../utils/noncopyable.h"
 
 #define LIMIT_MAX 10240
 
 namespace ccl {
 
 template <typename T>
-class buffer_t {
+class buffer_t : public noncopyable {
 public:
     explicit buffer_t();
     explicit buffer_t(size_t limit);
-    explicit buffer_t(size_t n, std::function<void(T &)> release_fn);
 
-    void push(const T &item);
-    void emplace(const T &item);
-    const T &get(size_t i) const;
+    void push(std::unique_ptr<T> item);
+    const std::unique_ptr<T> &at(size_t i) const;
+
     void clear();
-
     void release();
 
     bool full() const { return data_.size() >= limit_; }
@@ -35,59 +36,35 @@ public:
     size_t size() const { return data_.size(); }
     size_t limit_capacity() const { return limit_; };
 
-    void sort(std::function<bool(const T &, const T &)> fn);
-
-    std::vector<T> &data() { return data_; }
-
-    /* Copy disabled */
-    buffer_t(buffer_t<T> &)                     = delete;
-    buffer_t<T> &operator=(const buffer_t<T> &) = delete;
+    const std::vector<std::unique_ptr<T>> &data() const { return data_; }
 
 private:
     ~buffer_t();
 
 private:
-    std::vector<T> data_;
     size_t limit_;
     bool released_;
-    std::function<void(T &)> item_release_fn_;
+    std::vector<std::unique_ptr<T>> data_;
 };
 
 template <typename T>
-buffer_t<T>::buffer_t() :
-    limit_(LIMIT_MAX), released_(false), item_release_fn_(nullptr) {}
+buffer_t<T>::buffer_t() : limit_(LIMIT_MAX), released_(false) {}
 
 template <typename T>
-buffer_t<T>::buffer_t(size_t limit) :
-    limit_(limit), released_(false), item_release_fn_(nullptr) {}
+buffer_t<T>::buffer_t(size_t limit) : limit_(limit), released_(false) {}
 
 template <typename T>
-buffer_t<T>::buffer_t(size_t limit, std::function<void(T &)> fn) :
-    limit_(limit), released_(false), item_release_fn_(fn) {}
-
-template <typename T>
-void buffer_t<T>::push(const T &item) {
-    data_.push_back(item);
+void buffer_t<T>::push(std::unique_ptr<T> item) {
+    data_.push_back(std::move(item));
 }
 
 template <typename T>
-void buffer_t<T>::emplace(const T &item) {
-    data_.emplace_back(item);
-}
-
-template <typename T>
-const T &buffer_t<T>::get(size_t i) const {
-    // TODO: bug fix
-    return data_[i];
+const std::unique_ptr<T> &buffer_t<T>::at(size_t i) const {
+    return i >= data_.size() ? nullptr : data_.at(i);
 }
 
 template <typename T>
 void buffer_t<T>::clear() {
-    if (item_release_fn_) {
-        for (auto item : data_) {
-            item_release_fn_(item);
-        }
-    }
     data_.clear();
 }
 
@@ -96,13 +73,6 @@ void buffer_t<T>::release() {
     clear();
     released_ = true;
     delete this;
-}
-
-template <typename T>
-void buffer_t<T>::sort(std::function<bool(const T &, const T &)> fn) {
-    if (fn) {
-        std::sort(data_.begin, data_.end(), fn);
-    }
 }
 
 template <typename T>

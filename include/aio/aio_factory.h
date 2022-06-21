@@ -25,7 +25,7 @@ public:
             return std::unique_ptr<aio_t>(new aio_poll_t(timeout, size));
         case aio_type_t::epoll:
 #if __linux__
-            return std::unique_ptr<io_t>(new io_epoll_t(timeout, size));
+            return std::unique_ptr<aio_t>(new aio_epoll_t(timeout, size));
 #else
             return std::unique_ptr<aio_t>(new aio_poll_t(timeout, size));
 #endif

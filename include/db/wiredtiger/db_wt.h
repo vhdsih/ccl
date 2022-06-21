@@ -16,8 +16,10 @@ using wt_cursor     = WT_CURSOR *;
 using wt_session    = WT_SESSION *;
 using wt_connection = WT_CONNECTION *;
 
+/*
 static const char *default_wt_config =
     "create,cache_size=1GB,log=(enabled,recover=on,path=./logs)";
+    */
 
 class db_wt_t : public db_t {
 public:
