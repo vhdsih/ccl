@@ -25,14 +25,13 @@
 #include "pipe/inited_pipe2.h"
 #include "pipe/pipe.h"
 #include "pipe/pipe_helper.h"
-#include "types/buffer.h"
 #include "types/cache.h"
 #include "types/cache_with_time.h"
 #include "utils/log.h"
 #include "utils/noncopyable.h"
+#include "utils/ptr.h"
 
 namespace ccl {
-
 
 void hello();
 

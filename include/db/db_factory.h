@@ -8,6 +8,7 @@
 
 #include <memory>
 
+#include "../utils/ptr.h"
 #include "db.h"
 #include "db_types.h"
 #include "wiredtiger/db_wt.h"
@@ -30,7 +31,7 @@ inline std::unique_ptr<T> db_factory_t<T>::create(db_type_t type,
                                                   const std::string &conf) {
     switch (type) {
     case db_type_t::wiredtiger:
-        return std::unique_ptr<db_wt_t>(new db_wt_t(name, conf));
+        return ccl::make_unique<db_wt_t>(name, conf);
     default:;
         return nullptr;
     }

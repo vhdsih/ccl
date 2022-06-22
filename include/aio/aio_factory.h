@@ -8,6 +8,7 @@
 
 #include <memory>
 
+#include "../utils/ptr.h"
 #include "aio.h"
 #include "aio_epoll.h"
 #include "aio_poll.h"
@@ -22,18 +23,18 @@ public:
                                          int size) {
         switch (type) {
         case aio_type_t::poll:
-            return std::unique_ptr<aio_t>(new aio_poll_t(timeout, size));
+            return ccl::make_unique<aio_poll_t>(timeout, size);
         case aio_type_t::epoll:
 #if __linux__
-            return std::unique_ptr<aio_t>(new aio_epoll_t(timeout, size));
+            return ccl::make_unique<aio_epoll_t>(timeout, size);
 #else
-            return std::unique_ptr<aio_t>(new aio_poll_t(timeout, size));
+            return ccl::make_unique<aio_poll_t>(timeout, size);
 #endif
         case aio_type_t::select:
-            return std::unique_ptr<aio_t>(new aio_select_t(timeout, size));
+            return ccl::make_unique<aio_select_t>(timeout, size);
         default:;
+            return nullptr;
         }
-        return nullptr;
     }
 };
 
