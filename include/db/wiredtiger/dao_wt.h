@@ -24,8 +24,10 @@ public:
 
     bool create(cstr_t &target, cstr_t &conf) override;
 
-    bool exec(cstr_t, dao_item_t &, fn1_t) override;
-    bool exec(cstr_t, dao_item_t &, dao_item_t &, fn2_t) override;
+    bool exec(cstr_t, dao_item_t &, fn_i1_t) override;
+    bool exec(cstr_t, dao_item_t &, dao_items_t &, fn_s1_t) override;
+    bool exec(cstr_t, dao_item_t &, dao_item_t &, dao_items_t &,
+              fn_s2_t) override;
 
 private:
     cursor_op *get_op(cstr_t &target) const {

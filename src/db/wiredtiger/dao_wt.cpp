@@ -28,14 +28,18 @@ bool dao_wt_t::create(cstr_t &target, cstr_t &conf) {
     return code == 0;
 }
 
-bool dao_wt_t::exec(cstr_t where, dao_item_t &item, fn1_t fn) {
+bool dao_wt_t::exec(cstr_t where, dao_item_t &item, fn_i1_t fn) {
     // TODO:
     return fn(get_op(where), item);
 }
 
-bool dao_wt_t::exec(cstr_t where, dao_item_t &from, dao_item_t &to, fn2_t fn) {
-    // TODO:
-    return fn(get_op(where), from, to);
+bool dao_wt_t::exec(cstr_t where, dao_item_t &target, dao_items_t &ans,
+                    fn_s1_t fn) {
+    return fn(get_op(where), target, ans);
+}
+bool dao_wt_t::exec(cstr_t where, dao_item_t &from, dao_item_t &to,
+                    dao_items_t &ans, fn_s2_t fn) {
+    return fn(get_op(where), from, to, ans);
 }
 
 } // namespace ccl

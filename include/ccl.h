@@ -14,6 +14,7 @@
 #include "aio/aio_types.h"
 #include "db/dao.h"
 #include "db/dao_item.h"
+#include "db/dao_items.h"
 #include "db/db.h"
 #include "db/db_factory.h"
 #include "db/db_types.h"
