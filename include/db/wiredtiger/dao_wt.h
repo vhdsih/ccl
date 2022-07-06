@@ -38,6 +38,7 @@ private:
     }
 
 private:
+    bool created_;
     std::shared_ptr<db_wt_t> db_;
     std::map<std::string, cursor_op *> ops_;
 };
