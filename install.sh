@@ -50,5 +50,5 @@ init
 install_wiredtiger
 install_gflags
 install_glog
-build_ccl
+#build_ccl
 
