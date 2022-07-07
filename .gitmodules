@@ -1,3 +1,9 @@
 [submodule "third-party/wiredtiger"]
 	path = third-party/wiredtiger
 	url = https://github.com/wiredtiger/wiredtiger.git
+[submodule "third-party/glog"]
+	path = third-party/glog
+	url = https://github.com/google/glog.git
+[submodule "third-party/gflags"]
+	path = third-party/gflags
+	url = https://github.com/gflags/gflags.git

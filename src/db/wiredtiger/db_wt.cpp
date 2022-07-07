@@ -22,33 +22,25 @@ bool db_wt_t::check() { return true; }
 bool db_wt_t::close() {
     opened_  = false;
     int code = session_->close(session_, NULL);
-    output_log(">> wt close session: %s", code);
+    ccl_glog_info << "wiredtiger close session: " << wiredtiger_strerror(code);
     code = conn_->close(conn_, NULL);
-    output_log(">> wt close connection: %s", code);
+    ccl_glog_info << "wiredtiger close conn:" << wiredtiger_strerror(code);
     return true;
 }
 
 bool db_wt_t::create() {
-    logger(">> wt start create/open table %s with conf %s", db_name_.c_str(),
-           db_conf_.c_str());
+    // logger(">> wt start create/open table %s with conf %s", db_name_.c_str(),
+    //        db_conf_.c_str());
     int code =
         wiredtiger_open(db_name_.c_str(), NULL, db_conf_.c_str(), &conn_);
-    output_log(">> wt create/open connection: %s", code);
+    ccl_glog_info << "wiredtiger open conn: " << wiredtiger_strerror(code);
 
     code = conn_->open_session(conn_, NULL, NULL, &session_);
-    output_log(">> wt create/open session: %s", code);
+    ccl_glog_info << "wiredtiger open session: " << wiredtiger_strerror(code);
     opened_ = true;
     return true;
 }
 
 bool db_wt_t::remove() { return true; }
-
-void db_wt_t::output_log(const char *format, int code) const {
-    if (code != 0) {
-        logger(format, wiredtiger_strerror(code));
-    } else {
-        logger_error(format, wiredtiger_strerror(code));
-    }
-}
 
 } // namespace ccl

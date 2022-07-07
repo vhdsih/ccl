@@ -30,6 +30,7 @@
 #include "types/cache_with_time.h"
 #include "utils/log.h"
 #include "utils/noncopyable.h"
+#include "utils/path.h"
 #include "utils/ptr.h"
 
 namespace ccl {

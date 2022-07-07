@@ -8,30 +8,24 @@
 
 #include <ctime>
 
-#ifndef logger
-#define logger(...)                    \
-    printf("[I]%ld: ", time(nullptr)); \
-    printf(__VA_ARGS__);               \
-    printf("\n");
+#include "glog/logging.h"
 
-#endif
+namespace ccl {
 
-#ifndef logger_error
-#define logger_error(...)              \
-    printf("[E]%ld: ", time(nullptr)); \
-    printf(__VA_ARGS__);               \
-    printf("\n");
+inline void glog_log_init(const char* target, const char* dir) {
+    google::InitGoogleLogging(target);
+    FLAGS_log_dir = dir;
+}
 
-#endif
+inline void glog_log_clean() { google::ShutdownGoogleLogging(); }
 
-#ifndef logger_warn
-#define logger_warn(...)               \
-    printf("[W]%ld: ", time(nullptr)); \
-    printf(__VA_ARGS__);               \
-    printf("\n");
+} // namespace ccl
 
-#endif
+#define ccl_glog(is_info) ((is_info) ? LOG(INFO) : LOG(ERROR))
 
-namespace ccl {} // namespace ccl
+#define ccl_glog_info LOG(INFO)
+#define ccl_glog_warn LOG(WARNING)
+#define ccl_glog_error LOG(ERROR)
+#define ccl_glog_fatal LOG(FATAL)
 
 #endif

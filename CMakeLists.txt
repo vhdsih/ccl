@@ -1,8 +1,9 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required (VERSION 3.16)
 project(ccl)
 
 set(CMAKE_CXX_STANDARD 11)
-# set(CMAKE_BUILD_TYPE Release)
+
+set(CMAKE_BUILD_TYPE Release)
 
 set(CMAKE_CXX_FLAGS_DEBUG "-O0")    # 调试包不优化
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG") # release 包优化
@@ -32,7 +33,8 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third-party)
 
-set(WIREDTIGER_DIR ${THIRD_PARTY_DIR}/wiredtiger)
+set(THIRD_PARTY_LIB_DIR ${THIRD_PARTY_DIR}/local/lib)
+set(THIRD_PARTY_INCLUDE_DIR ${THIRD_PARTY_DIR}/local/include)
 
 set(INCLUDE
         ${INCLUDE_DIR}
@@ -42,7 +44,7 @@ set(INCLUDE
         ${INCLUDE_DIR}/pipe
         ${INCLUDE_DIR}/types
         ${INCLUDE_DIR}/utils
-        ${WIREDTIGER_DIR}/build/include
+        ${THIRD_PARTY_INCLUDE_DIR}
         )
 
 file(GLOB SOURCE_FILE
@@ -51,25 +53,51 @@ file(GLOB SOURCE_FILE
         ${SOURCE_DIR}/db/*.cpp
         ${SOURCE_DIR}/db/wiredtiger/*.cpp
         ${SOURCE_DIR}/common/*.cpp
+        ${SOURCE_DIR}/utils/*.cpp
         )
 
-set(EXT_LIBS
-    ${THIRD_PARTY}/wiredtiger/build/libwiredtiger.dylib
-)
-
-
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 include_directories(${INCLUDE})
-link_directories(${WIREDTIGER_DIR}/build/)
+link_directories(${THIRD_PARTY_LIB_DIR})
 
-add_library(${PROJECT_NAME} ${SOURCE_FILE})
-target_link_libraries(${PROJECT_NAME} pthread)
+set(glog_DIR ${THIRD_PARTY_DIR}/local/lib/cmake/glog)
+find_package (glog 0.6.0 REQUIRED)
+
+set(WT_LIB ${THIRD_PARTY_LIB_DIR}/libwiredtiger.a)
+set(GLOG_LIB ${THIRD_PARTY_LIB_DIR}/libglog.a)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+
+
+add_library(${PROJECT_NAME} STATIC ${SOURCE_FILE})
+
+target_link_libraries(${PROJECT_NAME} ${WT_LIB} glog::glog pthread)
+
+message("* build opt " ${CMAKE_CXX_FLAGS_RELEASE})
 
 
 # example
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin/examples)
-add_executable(run_lib ${INCLUDE} examples/run_lib.cpp)
-target_link_libraries(run_lib ${PROJECT_NAME} wiredtiger)
+
+add_executable(version ${INCLUDE} examples/version.cpp)
+target_link_libraries(version ${PROJECT_NAME})
 
 add_executable(db_wt ${INCLUDE} examples/db/wt.cpp)
-target_link_libraries(db_wt ${PROJECT_NAME} wiredtiger)
+target_link_libraries(db_wt ${PROJECT_NAME})
+
+add_executable(log ${INCLUDE} examples/utils/log.cpp)
+target_link_libraries(log ${PROJECT_NAME})
+
+
+INSTALL(TARGETS ${PROJECT_NAME} version db_wt log
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
+
+INSTALL (
+        DIRECTORY ${INCLUDE_DIR}/
+        DESTINATION include
+        FILES_MATCHING PATTERN "*.h*")
+
+INSTALL (
+        DIRECTORY ${THIRD_PARTY_INCLUDE_DIR}/
+        DESTINATION include
+        FILES_MATCHING PATTERN "*.h*")

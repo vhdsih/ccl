@@ -10,7 +10,6 @@
 #include <memory>
 
 #include "../dao.h"
-#include "wiredtiger.h"
 
 namespace ccl {
 

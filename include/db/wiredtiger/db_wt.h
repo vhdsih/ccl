@@ -5,7 +5,18 @@
 #include <vector>
 
 #include "../db.h"
-#include "wiredtiger.h"
+
+struct __wt_item;
+typedef struct __wt_item WT_ITEM;
+
+struct __wt_cursor;
+typedef struct __wt_cursor WT_CURSOR;
+
+struct __wt_session;
+typedef struct __wt_session WT_SESSION;
+
+struct __wt_connection;
+typedef struct __wt_connection WT_CONNECTION;
 
 namespace ccl {
 
@@ -35,9 +46,6 @@ public:
     db_type_t type() const override { return db_type_t::wiredtiger; }
 
     wt_session get_session() const { return session_; }
-
-private:
-    void output_log(const char *format, int code) const;
 
 private:
     bool opened_;

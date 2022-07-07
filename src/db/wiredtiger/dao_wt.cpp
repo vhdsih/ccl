@@ -8,18 +8,19 @@
 #include "cursor_op.h"
 #include "db_wt.h"
 #include "log.h"
+#include "wiredtiger.h"
 
 namespace ccl {
 
 dao_wt_t::dao_wt_t(std::shared_ptr<db_wt_t> db) : created_(false), db_(db) {
-    logger("dao_wt_t::inited");
+    ccl_glog_info << "dao wt create";
 }
 dao_wt_t::~dao_wt_t() {
     for (auto &obj2op : ops_) {
         delete obj2op.second;
     }
     ops_.clear();
-    logger("dao_wt_t::end");
+    ccl_glog_info << "dao wt released";
 }
 
 bool dao_wt_t::create(cstr_t &target, cstr_t &conf) {
