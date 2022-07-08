@@ -15,7 +15,7 @@ function init() {
 function install_wiredtiger() {
     cd ${wiredtiger}
     cversion=`rpm -q centos-release|cut -d- -f3`
-    if [ $cverson -eq 7 ]
+    if [ $cversion -eq 7 ]
     then
         git checkout f8cb8f23f
         ./autogen.sh
@@ -50,16 +50,8 @@ function install_glog() {
     make -j4 && make install
 }
 
-function build_ccl() {
-    mkdir -p ${root}/build
-    cd ${root}/build
-    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=${local}  ..
-    make -j4
-}
-
 init
 install_wiredtiger
 install_gflags
 install_glog
-#build_ccl
 
