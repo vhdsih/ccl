@@ -51,7 +51,7 @@ bool try_mkdir(const std::string& path) {
         start = end + 1;
     }
 
-    return false;
+    return true;
 }
 
 bool path_exits(const std::string& path) {

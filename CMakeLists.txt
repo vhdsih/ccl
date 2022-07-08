@@ -15,7 +15,7 @@ add_definitions(
         "-Wall"
         "-Werror"
         "-Wextra"
-        "-Wshadow"
+        # "-Wshadow"
         "-Wformat"
         "-Wpointer-arith"
         "-D_REENTRANT"
@@ -34,6 +34,7 @@ set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third-party)
 
 set(THIRD_PARTY_LIB_DIR ${THIRD_PARTY_DIR}/local/lib)
+set(THIRD_PARTY_LIB64_DIR ${THIRD_PARTY_DIR}/local/lib64)
 set(THIRD_PARTY_INCLUDE_DIR ${THIRD_PARTY_DIR}/local/include)
 
 set(INCLUDE
@@ -58,8 +59,8 @@ file(GLOB SOURCE_FILE
 
 include_directories(${INCLUDE})
 link_directories(${THIRD_PARTY_LIB_DIR})
+link_directories(${THIRD_PARTY_LIB64_DIR})
 
-set(glog_DIR ${THIRD_PARTY_DIR}/local/lib/cmake/glog)
 find_package (glog 0.6.0 REQUIRED)
 
 set(WT_LIB ${THIRD_PARTY_LIB_DIR}/libwiredtiger.a)
@@ -99,4 +100,7 @@ INSTALL (DIRECTORY ${THIRD_PARTY_INCLUDE_DIR}/
         FILES_MATCHING PATTERN "*.h*")
 
 INSTALL (DIRECTORY ${THIRD_PARTY_LIB_DIR}/
+        DESTINATION lib)
+
+INSTALL (DIRECTORY ${THIRD_PARTY_LIB64_DIR}/
         DESTINATION lib)

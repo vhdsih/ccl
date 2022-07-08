@@ -13,10 +13,21 @@ function init() {
 }
 
 function install_wiredtiger() {
-cd ${wiredtiger} && mkdir -p build && cd build
-    cmake -DCMAKE_INSTALL_PREFIX=${local} \
-        -DCMAKE_BUILD_TYPE=Release -DENABLE_STATIC=1 ..
-    make -j4 && make install
+    cd ${wiredtiger}
+    cversion=`rpm -q centos-release|cut -d- -f3`
+    if [ $cverson -eq 7 ]
+    then
+        git checkout f8cb8f23f
+        ./autogen.sh
+        ./configure --prefix=${local}
+        make -j12 && make install
+    else
+        git checkout develop
+        mkdir -p build && cd build
+        cmake -DCMAKE_INSTALL_PREFIX=${local} \
+            -DCMAKE_BUILD_TYPE=Release -DENABLE_STATIC=1 ..
+        make -j4 && make install
+    fi
 }
 
 
@@ -42,7 +53,7 @@ function install_glog() {
 function build_ccl() {
     mkdir -p ${root}/build
     cd ${root}/build
-    cmake -DCMAKE_BUILD_TYPE=Release ..
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=${local}  ..
     make -j4
 }
 
