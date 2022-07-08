@@ -32,9 +32,12 @@ function install_wiredtiger() {
 
 
 function install_gflags() {
-    cd ${gflags} && mkdir -p builds && cd builds
+    cd ${gflags}
+    rm -rf builds
+    mkdir -p builds && cd builds
     cmake -DCMAKE_INSTALL_PREFIX=${local} \
-        -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON \
+        -DCMAKE_PREFIX_PATH=${local} \
+        -DCMAKE_BUILD_TYPE=Release \
         -DBUILD_STATIC_LIBS=ON -DINSTALL_HEADERS=ON \
         -DINSTALL_SHARED_LIBS=ON -DINSTALL_STATIC_LIBS=ON ..
     make -j4 && make install
@@ -50,8 +53,8 @@ function install_glog() {
     make -j4 && make install
 }
 
-init
-install_wiredtiger
+#init
+#install_wiredtiger
 install_gflags
-install_glog
+#install_glog
 

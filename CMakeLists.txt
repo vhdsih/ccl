@@ -33,9 +33,10 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third-party)
 
-set(THIRD_PARTY_LIB_DIR ${THIRD_PARTY_DIR}/local/lib)
-set(THIRD_PARTY_LIB64_DIR ${THIRD_PARTY_DIR}/local/lib64)
-set(THIRD_PARTY_INCLUDE_DIR ${THIRD_PARTY_DIR}/local/include)
+set(THIRD_PARTY_LOCAL ${THIRD_PARTY_DIR}/local)
+set(THIRD_PARTY_LIB_DIR ${THIRD_PARTY_LOCAL}/lib)
+set(THIRD_PARTY_LIB64_DIR ${THIRD_PARTY_LOCAL}/lib64)
+set(THIRD_PARTY_INCLUDE_DIR ${THIRD_PARTY_LOCAL}/include)
 
 set(INCLUDE
         ${INCLUDE_DIR}
@@ -61,7 +62,10 @@ include_directories(${INCLUDE})
 link_directories(${THIRD_PARTY_LIB_DIR})
 link_directories(${THIRD_PARTY_LIB64_DIR})
 
-find_package (glog 0.6.0 REQUIRED)
+set(CMAKE_PREFIX_PATH ${THIRD_PARTY_LOCAL})
+
+find_package(glog REQUIRED)
+#find_package(gflags REQUIRED)
 
 set(WT_LIB ${THIRD_PARTY_LIB_DIR}/libwiredtiger.a)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
@@ -85,7 +89,7 @@ target_link_libraries(db_wt ${PROJECT_NAME})
 add_executable(log ${INCLUDE} examples/utils/log.cpp)
 target_link_libraries(log ${PROJECT_NAME})
 
-
+# install
 INSTALL(TARGETS ${PROJECT_NAME} version db_wt log
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
