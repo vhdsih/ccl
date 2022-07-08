@@ -6,12 +6,14 @@
 #ifndef CCL_PATH_H
 #define CCL_PATH_H
 
+#include <string>
+
 namespace ccl {
 
-bool mkdir(const char* path);
-bool path_exits(const char* path);
-bool path_is_dir(const char* path);
-bool path_is_file(const char* path);
+bool try_mkdir(const std::string& path);
+bool path_exits(const std::string& path);
+bool path_is_dir(const std::string& path);
+bool path_is_file(const std::string path);
 
 } // namespace ccl
 

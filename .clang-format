@@ -1,0 +1,1 @@
+{ BasedOnStyle: Google, Language: Cpp, Standard: Cpp11, AccessModifierOffset: -4, IndentWidth: 4, ObjCBlockIndentWidth: 4, SpacesBeforeTrailingComments: 1, TabWidth: 4, AlignConsecutiveAssignments: true, BreakConstructorInitializers: AfterColon, IndentCaseLabels: false, PointerAlignment: Right }
