@@ -68,7 +68,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILE})
 
-target_link_libraries(${PROJECT_NAME} ${WT_LIB} glog::glog pthread)
+target_link_libraries(${PROJECT_NAME} ${WT_LIB} glog::glog pthread dl)
 
 message("* build opt " ${CMAKE_CXX_FLAGS_RELEASE})
 
