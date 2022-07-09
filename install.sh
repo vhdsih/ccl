@@ -23,6 +23,7 @@ function install_wiredtiger() {
         make -j12 && make install
     else
         git checkout develop
+        rm -rf build
         mkdir -p build && cd build
         cmake -DCMAKE_INSTALL_PREFIX=${local} \
             -DCMAKE_BUILD_TYPE=Release -DENABLE_STATIC=1 ..
@@ -53,8 +54,8 @@ function install_glog() {
     make -j4 && make install
 }
 
-#init
-#install_wiredtiger
+init
+install_wiredtiger
 install_gflags
-#install_glog
+install_glog
 
