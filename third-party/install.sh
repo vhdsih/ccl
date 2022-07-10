@@ -2,15 +2,11 @@
 
 root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-wiredtiger=${root}/third-party/wiredtiger
-gflags=${root}/third-party/gflags
-glog=${root}/third-party/glog
-local=${root}/third-party/local
+wiredtiger=${root}/wiredtiger
+gflags=${root}/gflags
+glog=${root}/glog
+local=${root}/local
 
-function init() {
-    git submodule init
-    git submodule update --remote
-}
 
 function install_wiredtiger() {
     cd ${wiredtiger}
@@ -54,7 +50,6 @@ function install_glog() {
     make -j4 && make install
 }
 
-init
 install_wiredtiger
 install_gflags
 install_glog
