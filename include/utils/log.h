@@ -15,14 +15,17 @@ inline void glog_log_init(const char* target, const char* dir) {
     try_mkdir(dir);
     FLAGS_log_dir                   = dir;
     FLAGS_logbufsecs                = 0;
-    FLAGS_max_log_size              = 256;
+    FLAGS_max_log_size              = 512;
     FLAGS_colorlogtostderr          = true;
     FLAGS_stop_logging_if_full_disk = true;
     // google::SetLogFilenameExtension("log");
     google::InitGoogleLogging(target);
 }
 
-inline void glog_log_clean() { google::ShutdownGoogleLogging(); }
+inline void glog_log_clean() {
+    google::ShutdownGoogleLogging();
+    google::ShutDownCommandLineFlags();
+}
 
 } // namespace ccl
 
