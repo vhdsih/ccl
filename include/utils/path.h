@@ -13,7 +13,6 @@ namespace ccl {
 bool try_mkdir(const std::string& path);
 bool path_exits(const std::string& path);
 bool path_is_dir(const std::string& path);
-bool path_is_file(const std::string path);
 
 } // namespace ccl
 

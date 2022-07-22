@@ -31,6 +31,7 @@ add_definitions(
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)
 set(THIRD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third-party)
 
 set(THIRD_PARTY_LOCAL ${THIRD_PARTY_DIR}/local)
@@ -46,8 +47,9 @@ set(INCLUDE
         ${INCLUDE_DIR}/pipe
         ${INCLUDE_DIR}/types
         ${INCLUDE_DIR}/utils
+        ${INCLUDE_DIR}/thread
         ${THIRD_PARTY_INCLUDE_DIR}
-        )
+        examples/path_op.cpp)
 
 file(GLOB SOURCE_FILE
         ${SOURCE_DIR}/*.cpp
@@ -55,6 +57,7 @@ file(GLOB SOURCE_FILE
         ${SOURCE_DIR}/db/*.cpp
         ${SOURCE_DIR}/db/wiredtiger/*.cpp
         ${SOURCE_DIR}/common/*.cpp
+        ${SOURCE_DIR}/thread/*.cpp
         ${SOURCE_DIR}/utils/*.cpp
         )
 
@@ -76,21 +79,19 @@ target_link_libraries(${PROJECT_NAME} ${WT_LIB} glog::glog pthread dl)
 
 message("* build opt " ${CMAKE_CXX_FLAGS_RELEASE})
 
-
 # example
-SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin/examples)
+SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
-add_executable(version ${INCLUDE} examples/version.cpp)
-target_link_libraries(version ${PROJECT_NAME})
+file(GLOB_RECURSE EXAMPLES ${EXAMPLES_DIR}/*.cpp)
 
-add_executable(db_wt ${INCLUDE} examples/db/wt.cpp)
-target_link_libraries(db_wt ${PROJECT_NAME})
-
-add_executable(log ${INCLUDE} examples/utils/log.cpp)
-target_link_libraries(log ${PROJECT_NAME})
+foreach(EXAMPLE ${EXAMPLES})
+    get_filename_component(WHICH ${EXAMPLE} NAME_WE)
+    add_executable(${WHICH} ${EXAMPLE})
+    target_link_libraries(${WHICH} ${PROJECT_NAME})
+endforeach()
 
 # install
-INSTALL(TARGETS ${PROJECT_NAME} version db_wt log
+INSTALL(TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)

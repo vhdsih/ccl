@@ -55,18 +55,27 @@ bool try_mkdir(const std::string& path) {
 }
 
 bool path_exits(const std::string& path) {
-    (void)path;
-    return false;
+    struct stat st;
+    memset(&st, 0, sizeof(struct stat));
+    int ret = stat(path.c_str(), &st);
+    if (ret == -1 && errno != ENOENT) {
+        return false;
+    }
+    return ret == 0;
 }
 
 bool path_is_dir(const std::string& path) {
-    (void)path;
+    struct stat st;
+    memset(&st, 0, sizeof(struct stat));
+    int ret = stat(path.c_str(), &st);
+    if (ret == -1 && errno != ENOENT) {
+        return false;
+    }
+    if (ret == 0 && S_ISDIR(st.st_mode)) {
+        return true;
+    }
     return false;
 }
 
-bool path_is_file(const std::string& path) {
-    (void)path;
-    return false;
-}
 
 } // namespace ccl

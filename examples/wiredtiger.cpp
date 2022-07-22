@@ -15,6 +15,8 @@ public:
 };
 
 int main() {
+    ccl::try_mkdir("./WT_HOME/logs");
+
     auto handle = ccl::db_factory_t<ccl::db_wt_t>::create(
         ccl::db_type_t::wiredtiger, "./WT_HOME", "create");
     handle->create();
