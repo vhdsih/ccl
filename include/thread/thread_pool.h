@@ -52,6 +52,7 @@ private:
     std::condition_variable cv_;
     safe_queue_t<std::shared_ptr<wrappered_task_t>> tasks_;
     std::vector<std::unique_ptr<std::thread>> threads_;
+    std::vector<std::unique_ptr<std::thread>> useless_threads_;
     std::vector<std::unique_ptr<std::atomic<bool>>> flags_;
 };
 

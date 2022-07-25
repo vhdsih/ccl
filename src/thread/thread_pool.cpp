@@ -78,9 +78,11 @@ void thread_pool_t::resize(size_t n) {
         }
     } else if (n < size()) {
         while (size() > n) {
-            size_t idx = size() - 1;
+            size_t idx   = size() - 1;
             *flags_[idx] = true;
             threads_[idx]->detach();
+            useless_threads_.push_back(std::move(threads_[idx]));
+            threads_.pop_back();
         }
         {
             std::unique_lock<std::mutex> lock(cv_m_);
