@@ -16,10 +16,13 @@ public:
     safe_queue_t();
     ~safe_queue_t();
 
-    void push(value_type&& val);
-    void push(const value_type&& val);
+    void push(value_type& val);
+    void push(const value_type& val);
 
     void pop();
+    bool pop(value_type &val);
+    value_type pop(bool &have);
+
     value_type front();
     value_type back();
 
@@ -38,21 +41,49 @@ template <typename value_type>
 safe_queue_t<value_type>::~safe_queue_t() = default;
 
 template <typename value_type>
-void safe_queue_t<value_type>::push(value_type&& val) {
+void safe_queue_t<value_type>::push(value_type& val) {
     std::lock_guard<std::mutex> guard(mutex_);
     q_.push(val);
 }
 
 template <typename value_type>
-void safe_queue_t<value_type>::push(const value_type&& val) {
+void safe_queue_t<value_type>::push(const value_type& val) {
     std::lock_guard<std::mutex> guard(mutex_);
-    q_.push(val);
+    q_.push(std::forward<value_type>(val));
 }
 
 template <typename value_type>
 void safe_queue_t<value_type>::pop() {
     std::lock_guard<std::mutex> guard(mutex_);
-    q_.pop();
+    if (!q_.empty()) {
+        q_.pop();
+    }
+}
+
+template <typename value_type>
+bool safe_queue_t<value_type>::pop(value_type &val) {
+    std::lock_guard<std::mutex> guard(mutex_);
+    if (q_.empty()) {
+        return false;
+    } else {
+        val = q_.front();
+        q_.pop();
+        return true;
+    }
+}
+
+template <typename value_type>
+value_type safe_queue_t<value_type>::pop(bool &have) {
+    std::lock_guard<std::mutex> guard(mutex_);
+    have = !q_.empty();
+    if (have) {
+        value_type ret = q_.front();
+        q_.pop();
+        return ret;
+    } else {
+        return nullptr;
+    }
+
 }
 
 template <typename value_type>
