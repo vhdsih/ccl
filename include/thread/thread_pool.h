@@ -48,7 +48,7 @@ private:
     std::atomic<bool> terminate_;
     std::atomic<size_t> n_idle_;
 
-    std::mutex cv_m_;
+    mutable std::mutex cv_m_;
     std::condition_variable cv_;
     safe_queue_t<std::shared_ptr<wrappered_task_t>> tasks_;
     std::vector<std::unique_ptr<std::thread>> threads_;

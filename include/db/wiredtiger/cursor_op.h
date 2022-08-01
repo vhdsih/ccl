@@ -1,13 +1,4 @@
-/**
- * Copyright (C) 2015-2020 IQIYI
- * All rights reserved.
- *
- * AUTHOR(S)
- *   zhangdongchang
- *   E-mail: zhangdongchang@qiyi.com
- *
- */
-
+//
 // 用于wiredtiger游标的操作
 //
 

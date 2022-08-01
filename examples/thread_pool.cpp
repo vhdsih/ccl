@@ -6,80 +6,84 @@ struct Ret {
     std::string c;
 };
 
+thread_local int tl = 0;
+
 int case4() {
+    tl += 1;
     std::thread::id this_id = std::this_thread::get_id();
-    std::cout << "case 4 run " << this_id << std::endl;
+    std::cout << this_id << " " << tl << std::endl;
+
     sleep(4);
-    std::cout << "case 4 yes " << this_id << std::endl;
     return 2;
 }
 
 int case5(int a) {
+    tl += 1;
     std::thread::id this_id = std::this_thread::get_id();
-    std::cout << "case 5 run " << this_id << std::endl;
+    std::cout << this_id << " " << tl << std::endl;
+
     sleep(4);
-    std::cout << "case 5 yes " << this_id << std::endl;
     return 2 + a;
 }
 
 int case6(int a, int b) {
+    tl += 1;
     std::thread::id this_id = std::this_thread::get_id();
-    std::cout << "case 6 run " << this_id << std::endl;
+    std::cout << this_id << " " << tl << std::endl;
+
     sleep(4);
-    std::cout << "case 6 yes " << this_id << std::endl;
     return 2 + a + b;
 }
 
 std::string case7(int a, int b, const std::string &c) {
+    tl += 1;
     std::thread::id this_id = std::this_thread::get_id();
-    std::cout << "case 7 run " << this_id << std::endl;
+    std::cout << this_id << " " << tl << std::endl;
     sleep(4);
-    std::cout << "case 7 yes " << this_id << std::endl;
     return std::to_string(2 + a + b) + " " + c;
 }
 
 Ret case8() {
+    tl += 1;
     std::thread::id this_id = std::this_thread::get_id();
-    std::cout << "case 8 run " << this_id << std::endl;
+    std::cout << this_id << " " << tl << std::endl;
     sleep(4);
-    std::cout << "case 8 yes " << this_id << std::endl;
-
     Ret ret{1, 2, "abc"};
     return ret;
 }
 
 void case9() {
+    tl += 1;
     std::thread::id this_id = std::this_thread::get_id();
-    std::cout << "case 9 run " << this_id << std::endl;
+    std::cout << this_id << " " << tl << std::endl;
     sleep(4);
-    std::cout << "case 9 yes " << this_id << std::endl;
 }
 
 int main() {
-    ccl::thread_pool_t pool(4);
+    ccl::thread_pool_t pool(3);
 
-    auto f1 = pool.push([]() {
+    auto f1 = pool.push([&]() {
+        tl += 1;
         std::thread::id this_id = std::this_thread::get_id();
-        std::cout << "case 1 run " << this_id << std::endl;
+        std::cout << this_id << " " << tl << std::endl;
         sleep(10);
-        std::cout << "case 1 yes " << this_id << std::endl;
         return 13;
     });
 
     auto f2 = pool.push(
-        [](int a, double b) {
+        [&](int a, double b) {
+            tl += 1;
             std::thread::id this_id = std::this_thread::get_id();
-            std::cout << "case 2 run " << this_id << std::endl;
-            std::cout << "case 2 yes " << this_id << std::endl;
+            std::cout << this_id << " " << tl << std::endl;
             return 14 + a + b;
         },
         2, 2.2);
 
-    auto f3 = pool.push([]() {
+    auto f3 = pool.push([&]() {
+        tl += 1;
         std::thread::id this_id = std::this_thread::get_id();
-        std::cout << "case 3 run " << this_id << std::endl;
+        std::cout << this_id << " " << tl << std::endl;
         sleep(4);
-        std::cout << "case 3 yes " << this_id << std::endl;
         return 13;
     });
 
@@ -95,6 +99,7 @@ int main() {
 
     pool.push(case9);
 
+    sleep(20);
     std::cout << "idle " << pool.idle() << "f1 " << f1.get() << std::endl;
     std::cout << "idle " << pool.idle() << "f2 " << f2.get() << std::endl;
     std::cout << "idle " << pool.idle() << "f3 " << f3.get() << std::endl;

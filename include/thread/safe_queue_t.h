@@ -23,14 +23,14 @@ public:
     bool pop(value_type &val);
     value_type pop(bool &have);
 
-    value_type front();
-    value_type back();
+    value_type front() const;
+    value_type back() const;
 
-    bool empty();
-    size_t size();
+    bool empty() const;
+    size_t size() const;
 
 private:
-    std::mutex mutex_;
+    mutable std::mutex mutex_;
     std::queue<value_type> q_;
 };
 
@@ -87,25 +87,25 @@ value_type safe_queue_t<value_type>::pop(bool &have) {
 }
 
 template <typename value_type>
-value_type safe_queue_t<value_type>::front() {
+value_type safe_queue_t<value_type>::front() const {
     std::lock_guard<std::mutex> guard(mutex_);
     return q_.front();
 }
 
 template <typename value_type>
-value_type safe_queue_t<value_type>::back() {
+value_type safe_queue_t<value_type>::back() const {
     std::lock_guard<std::mutex> guard(mutex_);
     return q_.back();
 }
 
 template <typename value_type>
-bool safe_queue_t<value_type>::empty() {
+bool safe_queue_t<value_type>::empty() const {
     std::lock_guard<std::mutex> guard(mutex_);
     return q_.empty();
 }
 
 template <typename value_type>
-size_t safe_queue_t<value_type>::size() {
+size_t safe_queue_t<value_type>::size() const {
     std::lock_guard<std::mutex> guard(mutex_);
     return q_.size();
 }
