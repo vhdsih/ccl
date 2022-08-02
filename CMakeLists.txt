@@ -49,7 +49,7 @@ set(INCLUDE
         ${INCLUDE_DIR}/utils
         ${INCLUDE_DIR}/thread
         ${THIRD_PARTY_INCLUDE_DIR}
-        examples/path_op.cpp)
+        )
 
 file(GLOB SOURCE_FILE
         ${SOURCE_DIR}/*.cpp

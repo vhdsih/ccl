@@ -30,7 +30,8 @@ public:
     ~thread_pool_t();
 
     template <typename Fn, typename... Args>
-    auto push(Fn &&fn, Args &&...args) -> std::future<decltype(fn(args...))>;
+    auto push(Fn &&fn, Args &&...args)
+        -> std::future<decltype(fn(std::forward<Args>(args)...))>;
 
     void close();
 
@@ -58,12 +59,13 @@ private:
 
 template <typename Fn, typename... Args>
 auto thread_pool_t::push(Fn &&fn, Args &&...args)
-    -> std::future<decltype(fn(args...))> {
+    -> std::future<decltype(fn(std::forward<Args>(args)...))> {
     // packaged the fn
-    auto pck = std::make_shared<std::packaged_task<decltype(fn(args...))()>>(
+    auto pck = std::make_shared<
+        std::packaged_task<decltype(fn(std::forward<Args>(args)...))()>>(
         [&]() { return fn(std::forward<Args>(args)...); });
 
-    // wrapper the pck
+    // wrapper the pck (copy pck)
     auto task = std::make_shared<wrappered_task_t>(
         std::function<void(void)>([pck]() -> void { (*pck)(); }));
 

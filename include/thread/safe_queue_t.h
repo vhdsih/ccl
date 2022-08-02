@@ -20,8 +20,7 @@ public:
     void push(const value_type& val);
 
     void pop();
-    bool pop(value_type &val);
-    value_type pop(bool &have);
+    bool pop(value_type& val);
 
     value_type front() const;
     value_type back() const;
@@ -61,29 +60,15 @@ void safe_queue_t<value_type>::pop() {
 }
 
 template <typename value_type>
-bool safe_queue_t<value_type>::pop(value_type &val) {
+bool safe_queue_t<value_type>::pop(value_type& val) {
     std::lock_guard<std::mutex> guard(mutex_);
     if (q_.empty()) {
         return false;
     } else {
-        val = q_.front();
+        std::swap(val, q_.front());
         q_.pop();
         return true;
     }
-}
-
-template <typename value_type>
-value_type safe_queue_t<value_type>::pop(bool &have) {
-    std::lock_guard<std::mutex> guard(mutex_);
-    have = !q_.empty();
-    if (have) {
-        value_type ret = q_.front();
-        q_.pop();
-        return ret;
-    } else {
-        return nullptr;
-    }
-
 }
 
 template <typename value_type>

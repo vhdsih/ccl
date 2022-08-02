@@ -12,8 +12,9 @@ namespace ccl {
 thread_pool_t::thread_pool_t(size_t n) :
     closed_(false), terminate_(false), n_idle_(n) {
     for (size_t i = 0; i < n; ++i) {
-        threads_.push_back(make_thread(i));
+        // warn: init flags first
         flags_.push_back(ccl::make_unique<std::atomic<bool>>(false));
+        threads_.push_back(make_thread(i));
     }
 }
 

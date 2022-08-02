@@ -65,6 +65,7 @@ int main() {
     auto f1 = pool.push([&]() {
         tl += 1;
         std::thread::id this_id = std::this_thread::get_id();
+
         std::cout << this_id << " " << tl << std::endl;
         sleep(10);
         return 13;
@@ -86,6 +87,13 @@ int main() {
         sleep(4);
         return 13;
     });
+
+    auto x = ccl::make_unique<int>(100);
+    pool.push([](std::unique_ptr<int> p) {
+        std::thread::id this_id = std::this_thread::get_id();
+        std::cout << this_id << " xxxxxxxxxxxxxxxxxxx " << *p << std::endl;
+        return 13;
+    }, std::move(x));
 
     auto f4 = pool.push(case4);
 
