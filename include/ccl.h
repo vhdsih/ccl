@@ -28,6 +28,7 @@
 #include "pipe/pipe_helper.h"
 #include "thread/f.h"
 #include "thread/thread_pool.h"
+#include "thread/thread_pools.h"
 #include "types/cache.h"
 #include "types/cache_with_time.h"
 #include "utils/log.h"

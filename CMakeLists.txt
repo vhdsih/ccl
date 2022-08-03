@@ -73,7 +73,7 @@ find_package(glog REQUIRED)
 set(WT_LIB ${THIRD_PARTY_LIB_DIR}/libwiredtiger.a)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCE_FILE} include/thread/f.h)
+add_library(${PROJECT_NAME} STATIC ${SOURCE_FILE})
 
 target_link_libraries(${PROJECT_NAME} ${WT_LIB} glog::glog pthread dl)
 

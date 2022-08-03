@@ -18,7 +18,7 @@
 
 #include "../utils/noncopyable.h"
 #include "../utils/ptr.h"
-#include "safe_queue_t.h"
+#include "safe_queue.h"
 
 namespace ccl {
 
