@@ -88,13 +88,6 @@ int main() {
         return 13;
     });
 
-    auto x = ccl::make_unique<int>(100);
-    pool.push([](std::unique_ptr<int> p) {
-        std::thread::id this_id = std::this_thread::get_id();
-        std::cout << this_id << " xxxxxxxxxxxxxxxxxxx " << *p << std::endl;
-        return 13;
-    }, std::move(x));
-
     auto f4 = pool.push(case4);
 
     auto f5 = pool.push(case5, 101);

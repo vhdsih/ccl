@@ -12,7 +12,7 @@ namespace ccl {
 thread_pool_t::thread_pool_t(size_t n) :
     closed_(false), terminate_(false), n_idle_(n) {
     for (size_t i = 0; i < n; ++i) {
-        // warn: init flags first
+        // warn: must init flags first
         flags_.push_back(ccl::make_unique<std::atomic<bool>>(false));
         threads_.push_back(make_thread(i));
     }
@@ -23,17 +23,28 @@ thread_pool_t::~thread_pool_t() { close(); }
 void thread_pool_t::close() {
     if (closed_) {
         return;
+    } else {
+        closed_ = true;
     }
-    closed_    = true;
+
+    // wait tasks
+    while (!tasks_.empty()) {
+        std::lock_guard<std::mutex> lk(cv_m_);
+        cv_.notify_one();
+    }
+
+    // terminate
     terminate_ = true;
+    {
+        std::lock_guard<std::mutex> lk(cv_m_);
+        cv_.notify_all();
+    }
 
-    std::unique_lock<std::mutex> lk(cv_m_);
-    cv_.notify_all();
-    lk.unlock();
-
+    // wait threads
     for (auto &th : threads_) {
         th->join();
     }
+
     threads_.clear();
     while (!tasks_.empty()) tasks_.pop();
 }
@@ -43,31 +54,35 @@ void thread_pool_t::runner(size_t id) {
     while (true) {
         task = nullptr;
         {
+            // wait the task
             std::unique_lock<std::mutex> lk(cv_m_);
             cv_.wait(lk, [&] {
                 return terminate_ || tasks_.pop(task) || *flags_[id];
             });
         }
 
+        // check thread pool
         if (terminate_) {
             --n_idle_;
             break;
         }
-
-        --n_idle_;
-        if (task) (*task)();
-        ++n_idle_;
-
         if (*flags_[id]) {
             --n_idle_;
             break;
         }
+        if (!task) {
+            continue;
+        }
+
+        // exec the task
+        --n_idle_;
+        (*task)();
+        ++n_idle_;
     }
 }
 
-std::unique_ptr<std::thread> thread_pool_t::make_thread(size_t id) {
-    return ccl::make_unique<std::thread>([&](size_t id) { this->runner(id); },
-                                         id);
+std::unique_ptr<std::thread> thread_pool_t::make_thread(size_t i) {
+    return ccl::make_unique<std::thread>([&](size_t i) { this->runner(i); }, i);
 }
 
 void thread_pool_t::resize(size_t n) {

@@ -8,6 +8,7 @@
 #include <atomic>
 #include <condition_variable>
 #include <cstdlib>
+#include <functional>
 #include <future>
 #include <iostream>
 #include <memory>
@@ -60,10 +61,13 @@ private:
 template <typename Fn, typename... Args>
 auto thread_pool_t::push(Fn &&fn, Args &&...args)
     -> std::future<decltype(fn(std::forward<Args>(args)...))> {
+
     // packaged the fn
     auto pck = std::make_shared<
         std::packaged_task<decltype(fn(std::forward<Args>(args)...))()>>(
-        [&]() { return fn(std::forward<Args>(args)...); });
+        // [&]() { return fn(std::forward<Args>(args)...); });
+        // TODO: use bind, unique_ptr not supported
+        std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...));
 
     // wrapper the pck (copy pck)
     auto task = std::make_shared<wrappered_task_t>(
@@ -72,9 +76,14 @@ auto thread_pool_t::push(Fn &&fn, Args &&...args)
     // push into the queue
     tasks_.push(task);
 
-    // notify one thread
+    // push disabled
+    if (closed_ || terminate_) {
+        return pck->get_future();
+    }
+
     {
-        std::unique_lock<std::mutex> lock(cv_m_);
+        // notify one thread
+        std::lock_guard<std::mutex> lock(cv_m_);
         cv_.notify_one();
     }
     return pck->get_future();
