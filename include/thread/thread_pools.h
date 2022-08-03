@@ -17,7 +17,8 @@ public:
     void close();
 
     template <typename Fn, typename... Args>
-    bool push(size_t th_id, Fn &&fn, Args &&...args);
+    auto push(size_t id, Fn &&fn, Args &&...args)
+    -> std::future<decltype(fn(std::forward<Args>(args)...))>;
 
 private:
     const size_t n_pool_;
@@ -27,12 +28,9 @@ private:
 };
 
 template <typename Fn, typename... Args>
-bool thread_pools_t::push(size_t th_id, Fn &&fn, Args &&...args) {
-    if (th_id >= n_pool_) {
-        return false;
-    }
-    pools_[th_id]->push(std::forward<Fn>(fn), std::forward<Args>(args)...);
-    return true;
+auto thread_pools_t::push(size_t id, Fn &&fn, Args &&...args)
+-> std::future<decltype(fn(std::forward<Args>(args)...))> {
+    return pools_.at(id)->push(std::forward<Fn>(fn), std::forward<Args>(args)...);
 }
 
 } // namespace ccl
