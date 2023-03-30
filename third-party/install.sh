@@ -21,9 +21,8 @@ function install_wiredtiger() {
         git checkout develop
         rm -rf build
         mkdir -p build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=${local} \
-            -DCMAKE_BUILD_TYPE=Release -DENABLE_STATIC=1 ..
-        make -j4 && make install
+        cmake -DCMAKE_INSTALL_PREFIX=${local} -DENABLE_STATIC=1 ..
+        make -j12 && make install
     fi
 }
 
