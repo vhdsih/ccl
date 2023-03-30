@@ -4,6 +4,7 @@ project(ccl)
 set(CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(CMAKE_CXX_FLAGS_DEBUG "-O0")    # 调试包不优化
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG") # release 包优化
@@ -66,16 +67,19 @@ link_directories(${THIRD_PARTY_LIB_DIR})
 link_directories(${THIRD_PARTY_LIB64_DIR})
 
 set(CMAKE_PREFIX_PATH ${THIRD_PARTY_LOCAL})
+set(CMAKE_MODULE_PATH ${THIRD_PARTY_LOCAL}/lib/cmake/glog)
+set(CMAKE_MODULE_PATH ${THIRD_PARTY_LOCAL}/lib/cmake/gflags)
 
 find_package(glog REQUIRED)
-#find_package(gflags REQUIRED)
+find_package(gflags REQUIRED)
 
-set(WT_LIB ${THIRD_PARTY_LIB_DIR}/libwiredtiger.a)
+include_directories(${gflags_INCLUDE_DIRS})
+
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCE_FILE})
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILE})
 
-target_link_libraries(${PROJECT_NAME} ${WT_LIB} glog::glog pthread dl)
+target_link_libraries(${PROJECT_NAME} wiredtiger glog::glog ${gflags_LIBRARIES} pthread dl)
 
 message("* build opt " ${CMAKE_CXX_FLAGS_RELEASE})
 

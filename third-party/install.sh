@@ -21,7 +21,7 @@ function install_wiredtiger() {
         git checkout develop
         rm -rf build
         mkdir -p build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=${local} -DENABLE_STATIC=1 ..
+        cmake -DCMAKE_INSTALL_PREFIX=${local} -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
         make -j12 && make install
     fi
 }
@@ -34,8 +34,8 @@ function install_gflags() {
     cmake -DCMAKE_INSTALL_PREFIX=${local} \
         -DCMAKE_PREFIX_PATH=${local} \
         -DCMAKE_BUILD_TYPE=Release \
-        -DBUILD_STATIC_LIBS=ON -DINSTALL_HEADERS=ON \
-        -DINSTALL_SHARED_LIBS=ON -DINSTALL_STATIC_LIBS=ON ..
+        -DINSTALL_HEADERS=ON \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
     make -j4 && make install
 }
 
@@ -45,7 +45,8 @@ function install_glog() {
     rm -rf build
     mkdir -p build && cd build
     cmake -DCMAKE_INSTALL_PREFIX=${local} \
-        -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF ..
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON ..
     make -j4 && make install
 }
 
