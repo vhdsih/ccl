@@ -7,6 +7,7 @@
 #define CCL_AIO_TYPES_H
 
 #include <unistd.h>
+#include <stdint.h>
 
 #include <unordered_map>
 

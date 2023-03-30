@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <unordered_set>
+#include <sys/select.h>
 
 #include "aio.h"
 
