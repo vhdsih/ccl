@@ -67,8 +67,10 @@ link_directories(${THIRD_PARTY_LIB_DIR})
 link_directories(${THIRD_PARTY_LIB64_DIR})
 
 set(CMAKE_PREFIX_PATH ${THIRD_PARTY_LOCAL})
-set(CMAKE_MODULE_PATH ${THIRD_PARTY_LOCAL}/lib/cmake/glog)
-set(CMAKE_MODULE_PATH ${THIRD_PARTY_LOCAL}/lib/cmake/gflags)
+set(CMAKE_MODULE_PATH ${THIRD_PARTY_LIB_DIR}/lib/cmake/glog)
+set(CMAKE_MODULE_PATH ${THIRD_PARTY_LIB_DIR}/lib/cmake/gflags)
+set(CMAKE_MODULE_PATH ${THIRD_PARTY_LIB_DIR}/lib64/cmake/glog)
+set(CMAKE_MODULE_PATH ${THIRD_PARTY_LIB_DIR}/lib64/cmake/gflags)
 
 find_package(glog REQUIRED)
 find_package(gflags REQUIRED)

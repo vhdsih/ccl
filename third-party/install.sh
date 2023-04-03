@@ -35,6 +35,7 @@ function install_gflags() {
         -DCMAKE_PREFIX_PATH=${local} \
         -DCMAKE_BUILD_TYPE=Release \
         -DINSTALL_HEADERS=ON \
+        -DBUILD_SHARED_LIBS=ON \
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
     make -j4 && make install
 }
