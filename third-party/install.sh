@@ -36,6 +36,8 @@ function install_gflags() {
         -DCMAKE_BUILD_TYPE=Release \
         -DINSTALL_HEADERS=ON \
         -DBUILD_SHARED_LIBS=ON \
+        -DGFLAGS_INCLUDE_DIR=${local}/include \
+        -DGFLAGS_LIBRARY=/usr/local/lib/libgflags.so \
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
     make -j4 && make install
 }
@@ -47,6 +49,7 @@ function install_glog() {
     mkdir -p build && cd build
     cmake -DCMAKE_INSTALL_PREFIX=${local} \
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DGFLAGS_INCLUDE_DIR=${local}/include -DGFLAGS_LIBRARY=${local}/lib/libgflags.so \
         -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON ..
     make -j4 && make install
 }
